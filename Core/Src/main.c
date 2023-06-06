@@ -39,6 +39,9 @@
 //middlewares
 #include "u8g2.h"
 #include "oled_ui.h"
+
+//application
+#include "mqtt.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,18 +58,33 @@
 #define WIFI_NAME 		"HUAWEI_S10"
 #define WIFI_PASSWORD 	"sb123456"
 
+//默认域名(DNS)格式：{ProductID}.iotcloud.tencentdevices.com
 #define TencentCloud_ServerIp    "106.55.124.154"   //#云服务器ip地址[固定值]  
 #define TencentCloud_ServerPort  1883               //#云服务器端口号[固定值]
 
-#define Seniverse_ServerIP		"api.seniverse.com"
-#define Seniverse_ServerPort	80
-#define SeniverseAPI "GET https://api.seniverse.com/v3/weather/now.json?key=S0E1V0SzhjSNMOB2S&location=beijing&language=en&unit=c\r\n"
+//物联网平台上的"设备"信息(主要用于生成下述MQTT连接所使用的相关信息)
+#define ProductID       "9Y6OU8ISHV"                //#产品ID
+#define DeviceName      "ds18b20"                   //#设备名称
+#define DeviceSceret    "9ax6GtGyGD2aatCT8fzRIg=="  //#设备密钥[定期自动更新] - [最后更新时间:2023-04-06 17:16:43]
+#define clientToken     "123"                       //#客户端令牌，主要用于消息匹配
+
+//通过MQTT协议连接腾讯云物联网云平台所需关键信息[随着设备密钥的更新而更新] - [最后更新时间:2023-05-02]
+#define UserName    "9Y6OU8ISHVds18b20;12010126;YZP5R;1683615870"                                 //#用户名称,格式固定：由专门的软件生成
+#define Password    "7a56aaaa2db87a85b79810a4f8ab36a4d4a86d52aeedaf0e190929e001d03d5f;hmacsha256" //#密码,格式固定：由专门的软件生成
+
+//#define Seniverse_ServerIP		"api.seniverse.com"
+//#define Seniverse_ServerPort	80
+//#define SeniverseAPI "GET https://api.seniverse.com/v3/weather/now.json?key=S0E1V0SzhjSNMOB2S&location=beijing&language=en&unit=c\r\n"
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+char message[200];      //#消息
+char ClientID[50];      //#客户端ID,格式固定：{ProductID}{DeviceName}
+char TencentCloud_PublishTopic[100];     //#腾讯云平台发布主题
+char TencentCloud_SubscribeTopic[100];   //#腾讯云平台订阅主题
+char TencentApp_SubscribeTopic[100];     //#腾讯连连订阅主题
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -115,7 +133,23 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
     //ui_draw_image();
-	ESP8266_TCPClient_Init(WIFI_NAME, WIFI_PASSWORD, Seniverse_ServerIP, Seniverse_ServerPort);
+	/***********************************连接云服务器***********************************/
+	while (ESP8266_TCPClient_Init(WIFI_NAME, WIFI_PASSWORD, TencentCloud_ServerIp, TencentCloud_ServerPort)){}
+	/**************************连接云服务器上的物联网开发平台*************************/
+    printf("【连接】与腾讯云物联网开发平台建立MQTT连接........");
+    sprintf(ClientID, "%s%s", ProductID, DeviceName);
+    while (MQTT_Connect(ClientID, UserName, Password));
+	
+	/**********************************主动订阅相关主题********************************/
+    sprintf(TencentCloud_PublishTopic, "$thing/up/property/%s/%s", ProductID, DeviceName);
+    sprintf(TencentCloud_SubscribeTopic, "$thing/down/property/%s/%s", ProductID, DeviceName);
+    sprintf(TencentApp_SubscribeTopic, "$thing/down/service/%s/%s", ProductID, DeviceName);
+    
+    printf("【订阅】\"腾讯云物联网开发平台\"主题................");
+    MQTT_Subscribe(TencentCloud_SubscribeTopic, 1, 0);   
+    printf("【订阅】\"腾讯连连微信小程序\"主题..................");
+    MQTT_Subscribe(TencentApp_SubscribeTopic, 1, 0);
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -136,11 +170,11 @@ int main(void)
         {
 			//ESP8266_ExtiSeriaNet();
 			//ESP8266_SendATCmd("AT\r\n", "OK", 100);
-			HAL_UART_Transmit(&huart3, usart1.rx_buffer, strlen((char *)(usart1.rx_buffer)), 0xFFFF);
+			//HAL_UART_Transmit(&huart3, usart1.rx_buffer, strlen((char *)(usart1.rx_buffer)), 0xFFFF);
 			LED1 = !LED1;
 			usart1.rx_flag = 0;
             usart1.rx_size = 0;
-            //printf("usart[1]_rx:%s\n", usart1.rx_buffer);
+            printf("usart[1]_rx:%s\n", usart1.rx_buffer);
             memset(usart1.rx_buffer, 0, RXBUFFERSIZE);
 		}
 		if (usart3.rx_flag)
@@ -156,13 +190,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
         //////////运行指示灯///////////
-//        delay_ms(1);
-//        count++;
-//        if (count % 233 == 0)
-//        {
+        delay_ms(1);
+        count++;
+        if (count % 3000 == 0)
+        {
 //            LED1 = !LED1;
-//            count = 0;
-//        }
+			MQTT_PingReqPer100s(); /* 保活 */
+            count = 0;
+        }
         ///////////////////////////////
     }
   /* USER CODE END 3 */

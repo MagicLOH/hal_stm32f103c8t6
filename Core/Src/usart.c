@@ -274,6 +274,14 @@ void USARTx_SendString(USART_TypeDef *_USARTx, char *_pstr)
     }
 }
 
+void USART3_SendDataPack(uint8_t *_pData, uint8_t _ucLen)
+{
+	uint8_t i;
+	for (i = 0; i < _ucLen; i++) {
+		USART3->DR = _pData[i];
+		while(!(USART3->SR & 1<<7)); // 利用TXE标志位判断数据包是否发送完毕
+	}
+}
 #if 0
 /**
   * @brief		重写串口回调函数

@@ -51,6 +51,7 @@ extern usart_rx_t usart1;
 extern usart_rx_t usart3;
 
 void USARTx_SendString(USART_TypeDef *_USARTx, char *_pstr);
+void USART3_SendDataPack(uint8_t *_pData, uint8_t _ucLen);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
