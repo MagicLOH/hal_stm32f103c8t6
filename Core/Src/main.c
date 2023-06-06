@@ -118,7 +118,6 @@ int main(void)
 	ESP8266_TCPClient_Init(WIFI_NAME, WIFI_PASSWORD, Seniverse_ServerIP, Seniverse_ServerPort);
   /* USER CODE END 2 */
 
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
     uint8_t count = 0;
