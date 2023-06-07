@@ -65,10 +65,10 @@
 //物联网平台上的"设备"信息(主要用于生成下述MQTT连接所使用的相关信息)
 #define ProductID       "I2UTOKP9RE"                //#产品ID
 #define DeviceName      "dev1"                   	//#设备名称
-#define DeviceSceret    "yZQeHJUw24KJJ+1Z3iMsbg=="  //#设备密钥[定期自动更新] - [最后更新时间:2023-04-06 17:16:43]
+#define DeviceSceret    "yZQeHJUw24KJJ+1Z3iMsbg=="  //#设备密钥[定期自动更新] - [最后更新时间:2023-06-07 17:16:43]
 #define clientToken     "123"                       //#客户端令牌，主要用于消息匹配
 
-//通过MQTT协议连接腾讯云物联网云平台所需关键信息[随着设备密钥的更新而更新] - [最后更新时间:2023-05-02]
+//通过MQTT协议连接腾讯云物联网云平台所需关键信息[随着设备密钥的更新而更新] - [最后更新时间:2023-06-07]
 #define UserName    "I2UTOKP9REdev1;12010126;8Z0AK;1686728631"                                 	//#用户名称,格式固定：由专门的软件生成
 #define Password    "0c23b14b50c9b751644b4df8483e898dd192835d65a8e6a0c3a211496ee22684;hmacsha256" 	//#密码,格式固定：由专门的软件生成
 
