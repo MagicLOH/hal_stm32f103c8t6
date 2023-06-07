@@ -63,14 +63,14 @@
 #define TencentCloud_ServerPort  1883               //#云服务器端口号[固定值]
 
 //物联网平台上的"设备"信息(主要用于生成下述MQTT连接所使用的相关信息)
-#define ProductID       "9Y6OU8ISHV"                //#产品ID
-#define DeviceName      "ds18b20"                   //#设备名称
-#define DeviceSceret    "9ax6GtGyGD2aatCT8fzRIg=="  //#设备密钥[定期自动更新] - [最后更新时间:2023-04-06 17:16:43]
+#define ProductID       "I2UTOKP9RE"                //#产品ID
+#define DeviceName      "dev1"                   	//#设备名称
+#define DeviceSceret    "yZQeHJUw24KJJ+1Z3iMsbg=="  //#设备密钥[定期自动更新] - [最后更新时间:2023-04-06 17:16:43]
 #define clientToken     "123"                       //#客户端令牌，主要用于消息匹配
 
 //通过MQTT协议连接腾讯云物联网云平台所需关键信息[随着设备密钥的更新而更新] - [最后更新时间:2023-05-02]
-#define UserName    "9Y6OU8ISHVds18b20;12010126;YZP5R;1683615870"                                 //#用户名称,格式固定：由专门的软件生成
-#define Password    "7a56aaaa2db87a85b79810a4f8ab36a4d4a86d52aeedaf0e190929e001d03d5f;hmacsha256" //#密码,格式固定：由专门的软件生成
+#define UserName    "I2UTOKP9REdev1;12010126;8Z0AK;1686728631"                                 	//#用户名称,格式固定：由专门的软件生成
+#define Password    "0c23b14b50c9b751644b4df8483e898dd192835d65a8e6a0c3a211496ee22684;hmacsha256" 	//#密码,格式固定：由专门的软件生成
 
 //#define Seniverse_ServerIP		"api.seniverse.com"
 //#define Seniverse_ServerPort	80
@@ -80,7 +80,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char message[200];      //#消息
+char message[512];      //#消息
 char ClientID[50];      //#客户端ID,格式固定：{ProductID}{DeviceName}
 char TencentCloud_PublishTopic[100];     //#腾讯云平台发布主题
 char TencentCloud_SubscribeTopic[100];   //#腾讯云平台订阅主题
@@ -121,7 +121,6 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
   /* USER CODE END SysInit */
 
@@ -154,7 +153,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    uint8_t count = 0;
+    uint16_t count = 0;
+	uint16_t i, j;
     while (1)
     {
 //		delay_ms(1000);
@@ -168,22 +168,33 @@ int main(void)
         /*------------------------------串口1接收------------------------------*/
         if (usart1.rx_flag)
         {
-			//ESP8266_ExtiSeriaNet();
-			//ESP8266_SendATCmd("AT\r\n", "OK", 100);
-			//HAL_UART_Transmit(&huart3, usart1.rx_buffer, strlen((char *)(usart1.rx_buffer)), 0xFFFF);
 			LED1 = !LED1;
+            printf("usart[1]_rx:%s\n", usart1.rx_buffer);
+			HAL_UART_Transmit(&huart3, usart1.rx_buffer, strlen((char *)(usart1.rx_buffer)), 0xFFFF);
 			usart1.rx_flag = 0;
             usart1.rx_size = 0;
-            printf("usart[1]_rx:%s\n", usart1.rx_buffer);
             memset(usart1.rx_buffer, 0, RXBUFFERSIZE);
 		}
 		if (usart3.rx_flag)
         {
+//            printf("usart[3]_rx:\n%s\n", usart3.rx_buffer);
+			/* 过滤 '\0' */
+            for(i = 0; i < usart3.rx_size; i++) 
+            {
+                if(usart3.rx_buffer[i] != '\0')
+                    message[j++] = usart3.rx_buffer[i];
+            }
+            message[j] = '\0';
+			if (strstr(message, "\"switch\":1"))
+				LED1 = !LED1;
+            printf("【下行】\n%s\n", message);
 			usart3.rx_flag = 0;
             usart3.rx_size = 0;
-            printf("usart[3]_rx:\n%s\n", usart3.rx_buffer);
+			j = 0;
+			memset(message, 0, sizeof(message));
             memset(usart3.rx_buffer, 0, RXBUFFERSIZE);
 		}
+		
 		
         /*---------------------------------end---------------------------------*/
     /* USER CODE END WHILE */
@@ -192,9 +203,9 @@ int main(void)
         //////////运行指示灯///////////
         delay_ms(1);
         count++;
-        if (count % 3000 == 0)
+        if (count % 100000 == 0)
         {
-//            LED1 = !LED1;
+            LED1 = !LED1;
 			MQTT_PingReqPer100s(); /* 保活 */
             count = 0;
         }

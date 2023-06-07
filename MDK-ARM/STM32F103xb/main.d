@@ -44,3 +44,4 @@ stm32f103xb\main.o: ..\Middlewares\u8g2\u8x8.h
 stm32f103xb\main.o: E:\MDK5\ARM\ARMCC\Bin\..\include\stdarg.h
 stm32f103xb\main.o: E:\MDK5\ARM\ARMCC\Bin\..\include\limits.h
 stm32f103xb\main.o: ..\Middlewares\gui\oled_ui.h
+stm32f103xb\main.o: ..\Core\MQTT\mqtt.h

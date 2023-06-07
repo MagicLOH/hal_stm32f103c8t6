@@ -28,7 +28,7 @@ uint8_t ESP8266_SendATCmd(char *_pCmd, char *_pAck, uint16_t _Errtime)
         {
             delay_ms(1);
             count++;
-            if (usart3.rx_flag == 1)
+            if (usart3.rx_flag)
             {
                 usart3.rx_flag = 0; //接一次就清除标志位
                 usart3.rx_size = 0;

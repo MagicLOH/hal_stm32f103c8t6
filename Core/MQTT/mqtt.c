@@ -188,7 +188,7 @@ uint8_t MQTT_Publish(char *topic, char *message, uint8_t Qos)
     //【4,响应】
     //【5,动作】
     //发送控制报文
-    USART3_SendData(mqtt_txBuf, mqtt_txBufLen);
+    USART3_SendDataPack(mqtt_txBuf, mqtt_txBufLen);
     return mqtt_txBufLen;
 }
 
@@ -252,6 +252,7 @@ uint8_t MQTT_Subscribe(char *topic, uint8_t stat, uint8_t Qos)
 \******************************************************************************/
 uint8_t MQTT_PingReqPer100s(void)
 {
+	printf("This message is keep live thread!\n");
     return MQTT_SendControlPackets(PACKET_PINGREQ, sizeof(PACKET_PINGREQ), PACKET_PINGRESP);
 }
 
@@ -262,6 +263,6 @@ uint8_t MQTT_PingReqPer100s(void)
 \******************************************************************************/
 void MQTT_DisConnect(void)
 {
-    USART3_SendData(PACKET_DISCONNECT, sizeof(PACKET_DISCONNECT));
+    USART3_SendDataPack(PACKET_DISCONNECT, sizeof(PACKET_DISCONNECT));
 }
 
