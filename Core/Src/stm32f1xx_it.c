@@ -283,7 +283,7 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 1 */
 	uint8_t tmp_flag = 0;
 	uint32_t temp;
-	tmp_flag =__HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE); // 获取IDLE标志位
+	tmp_flag = __HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE); // 获取IDLE标志位
 	if((tmp_flag != RESET)) // idle标志被置位
 	{ 
 		__HAL_UART_CLEAR_IDLEFLAG(&huart3); // 清除标志位

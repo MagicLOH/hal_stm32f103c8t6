@@ -37,11 +37,11 @@ stm32f103xb\main.o: E:\MDK5\ARM\ARMCC\Bin\..\include\string.h
 stm32f103xb\main.o: ..\SYSTEM\delay.h
 stm32f103xb\main.o: ..\SYSTEM\sys.h
 stm32f103xb\main.o: ..\SYSTEM\I2C\i2c.h
-stm32f103xb\main.o: ..\Hardwares\LED\led.h
-stm32f103xb\main.o: ..\Hardwares\ESP8266\esp8266.h
+stm32f103xb\main.o: ..\Core\MQTT\mqtt.h
 stm32f103xb\main.o: ..\Middlewares\u8g2\u8g2.h
 stm32f103xb\main.o: ..\Middlewares\u8g2\u8x8.h
 stm32f103xb\main.o: E:\MDK5\ARM\ARMCC\Bin\..\include\stdarg.h
 stm32f103xb\main.o: E:\MDK5\ARM\ARMCC\Bin\..\include\limits.h
 stm32f103xb\main.o: ..\Middlewares\gui\oled_ui.h
-stm32f103xb\main.o: ..\Core\MQTT\mqtt.h
+stm32f103xb\main.o: ..\Hardwares\LED\led.h
+stm32f103xb\main.o: ..\Hardwares\ESP8266\esp8266.h

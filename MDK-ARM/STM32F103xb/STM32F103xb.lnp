@@ -7,7 +7,7 @@
 "stm32f103xb\usart.o"
 "stm32f103xb\stm32f1xx_it.o"
 "stm32f103xb\stm32f1xx_hal_msp.o"
-"stm32f103xb\mqtt.o"
+"stm32f103xb\mqtt_1.o"
 "stm32f103xb\mui.o"
 "stm32f103xb\mui_u8g2.o"
 "stm32f103xb\u8g2_bitmap.o"

@@ -44,8 +44,8 @@ void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN Prototypes */
 typedef struct {
 	uint8_t rx_buffer[RXBUFFERSIZE];// 接收缓冲区
-	volatile uint8_t rx_flag;		// 接收数据个数
-	volatile uint16_t rx_size;		// 接收一帧完成标志
+	__IOM uint8_t rx_flag;			// 接收数据个数
+	__IOM uint16_t rx_size;			// 接收一帧完成标志
 }usart_rx_t;
 extern usart_rx_t usart1;
 extern usart_rx_t usart3;

@@ -32,16 +32,17 @@
 #include "delay.h"
 #include "i2c.h"
 
-//hardwares
-#include "led.h"
-#include "esp8266.h"
+//application
+#include "mqtt.h"
 
 //middlewares
 #include "u8g2.h"
 #include "oled_ui.h"
 
-//application
-#include "mqtt.h"
+//hardwares
+#include "led.h"
+#include "esp8266.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -122,6 +123,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
   /* USER CODE BEGIN SysInit */
+	delay_init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -131,6 +133,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  
     //ui_draw_image();
 	/***********************************连接云服务器***********************************/
 	while (ESP8266_TCPClient_Init(WIFI_NAME, WIFI_PASSWORD, TencentCloud_ServerIp, TencentCloud_ServerPort)){}

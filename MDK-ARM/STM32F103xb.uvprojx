@@ -428,6 +428,11 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f1xx_hal_msp.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Application/User/MQTT</GroupName>
+          <Files>
             <File>
               <FileName>mqtt.c</FileName>
               <FileType>1</FileType>
